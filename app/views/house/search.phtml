@@ -58,12 +58,12 @@
                     <?php if ($this->session->get('userAuth') != "1") {
                         // if the user is not an admin only display the edit and deleate buttons where the user created the place
                         if ($house['createdByUserId'] == $this->session->get('userId')) { ?>
-                            <td><?= $this->tag->linkTo(["/houses/edit/" . $house['id'], "Edit"]); ?></td>
-                            <td><?= $this->tag->linkTo(["/houses/delete/" . $house['id'], "Delete"]); ?></td>
+                            <td><?= $this->tag->linkTo(["/house/edit/" . $house['id'], "Edit"]); ?></td>
+                            <td><?= $this->tag->linkTo(["/house/delete/" . $house['id'], "Delete"]); ?></td>
                         <?php }
                     } else { ?>
-                        <td><?= $this->tag->linkTo(["/houses/edit/" . $house['id'], "Edit"]); ?></td>
-                        <td><?= $this->tag->linkTo(["/houses/delete/" . $house['id'], "Delete"]); ?></td>
+                        <td><?= $this->tag->linkTo(["/house/edit/" . $house['id'], "Edit"]); ?></td>
+                        <td><?= $this->tag->linkTo(["/house/delete/" . $house['id'], "Delete"]); ?></td>
                     <?php } ?>
                 </tr>
             <?php endforeach; ?>
