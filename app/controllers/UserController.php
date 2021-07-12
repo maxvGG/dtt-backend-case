@@ -142,8 +142,8 @@ class UserController extends ControllerBase
         $this->flash->success("user was created successfully");
 
         $this->dispatcher->forward([
-            'controller' => "houses",
-            'action' => 'index'
+            'controller' => "user",
+            'action' => 'login'
         ]);
     }
 
@@ -267,7 +267,7 @@ class UserController extends ControllerBase
     }
     public function authorizeAction()
     {
-        $this->loginredirect();
+
         $username = $this->request->getPost('username');
         $pass = $this->request->getPost('password');
         $user = User::findFirstByUsername($username);
@@ -297,6 +297,7 @@ class UserController extends ControllerBase
             $this->flash->error("That username was not found - try again");
             return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
         }
+        $this->loginredirect();
         return $this->dispatcher->forward(["controller" => "index", "action" => "index"]);
     }
     public function validation()
