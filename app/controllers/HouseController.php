@@ -126,7 +126,7 @@ class HouseController extends ControllerBase
         $house->setbathroomCount($this->request->getPost("bathroomCount", "int"));
         $house->settoiletCount($this->request->getPost("toiletCount", "int"));
         $house->setstorageCount($this->request->getPost("storageCount", "int"));
-
+        $house->setcreatedByUserId($this->session->get("userId"), "int");
 
         if (!$house->save()) {
             foreach ($house->getMessages() as $message) {

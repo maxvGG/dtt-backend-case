@@ -198,7 +198,18 @@ class House extends \Phalcon\Mvc\Model
 
         return $this;
     }
+    /**
+     * Method to set the value of field createdByUserId
+     *
+     * @param integer $createdByUserId
+     * @return $this
+     */
+    public function setcreatedByUserId($createdByUserId)
+    {
+        $this->createdByUserId = $createdByUserId;
 
+        return $this;
+    }
     /**
      * Method to set the value of field storageCount
      *
@@ -352,5 +363,4 @@ class House extends \Phalcon\Mvc\Model
     {
         return parent::findFirst($parameters);
     }
-
 }
