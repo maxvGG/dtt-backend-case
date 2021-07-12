@@ -17,16 +17,7 @@ class UserController extends ControllerBase
      */
     public function indexAction()
     {
-        $di->setShared(
-            'session',
-            function () {
-                $session = new Session();
-
-                $session->start();
-
-                return $session;
-            }
-        );
+        $this->loginredirect();
     }
 
     /**
@@ -34,6 +25,7 @@ class UserController extends ControllerBase
      */
     public function searchAction()
     {
+        $this->loginredirect();
         $numberPage = $this->request->getQuery('page', 'int', 1);
         $parameters = Criteria::fromInput($this->di, 'User', $_GET)->getParams();
         $parameters['order'] = "id";
@@ -68,7 +60,6 @@ class UserController extends ControllerBase
      */
     public function newAction()
     {
-        //
     }
 
     /**
@@ -78,6 +69,7 @@ class UserController extends ControllerBase
      */
     public function editAction($id)
     {
+        $this->loginredirect();
         if (!$this->request->isPost()) {
             $user = User::findFirstByid($id);
             if (!$user) {
@@ -112,6 +104,7 @@ class UserController extends ControllerBase
      */
     public function createAction()
     {
+
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
                 'controller' => "user",
@@ -160,7 +153,7 @@ class UserController extends ControllerBase
      */
     public function saveAction()
     {
-
+        $this->loginredirect();
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
                 'controller' => "user",
@@ -226,6 +219,7 @@ class UserController extends ControllerBase
      */
     public function deleteAction($id)
     {
+        $this->loginredirect();
         $user = User::findFirstByid($id);
         if (!$user) {
             $this->flash->error("user was not found");
@@ -267,11 +261,13 @@ class UserController extends ControllerBase
     }
     public function logoutAction()
     {
+
         $this->session->destroy();
-        return $this->dispatcher->forward(["controller" => "member", "action" => "search"]);
+        return $this->dispatcher->forward(["controller" => "user", "action" => "search"]);
     }
     public function authorizeAction()
     {
+        $this->loginredirect();
         $username = $this->request->getPost('username');
         $pass = $this->request->getPost('password');
         $user = User::findFirstByUsername($username);
@@ -309,5 +305,12 @@ class UserController extends ControllerBase
         $uValidator = new UniquenessValidator(["message" => "this userName has already been chosen"]);
         $validator->add('username', $uValidator);
         return $this->validate($validator);
+    }
+    public function loginredirect()
+    {
+        if (!$this->session->get('userId')) {
+            var_dump($_SESSION);
+            $this->response->redirect('/user/login');
+        }
     }
 }

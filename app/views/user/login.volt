@@ -21,3 +21,4 @@
     </div>
 </fieldset>
 {{ endform() }}
+<button class="btn btn-secondary"><a href="/user/new">register</a></button>

@@ -15,7 +15,7 @@ class HouseController extends ControllerBase
      */
     public function indexAction()
     {
-        //
+        $this->loginredirect();
     }
 
     /**
@@ -23,6 +23,7 @@ class HouseController extends ControllerBase
      */
     public function searchAction()
     {
+        $this->loginredirect();
         $numberPage = $this->request->getQuery('page', 'int', 1);
         $parameters = Criteria::fromInput($this->di, 'House', $_GET)->getParams();
         $parameters['order'] = "id";
@@ -58,6 +59,7 @@ class HouseController extends ControllerBase
     public function newAction()
     {
         //
+        $this->loginredirect();
     }
 
     /**
@@ -67,6 +69,7 @@ class HouseController extends ControllerBase
      */
     public function editAction($id)
     {
+        $this->loginredirect();
         if (!$this->request->isPost()) {
             $house = House::findFirstByid($id);
             if (!$house) {
@@ -101,6 +104,7 @@ class HouseController extends ControllerBase
      */
     public function createAction()
     {
+        $this->loginredirect();
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
                 'controller' => "house",
@@ -151,7 +155,7 @@ class HouseController extends ControllerBase
      */
     public function saveAction()
     {
-
+        $this->loginredirect();
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
                 'controller' => "house",
@@ -218,6 +222,7 @@ class HouseController extends ControllerBase
      */
     public function deleteAction($id)
     {
+        $this->loginredirect();
         $house = House::findFirstByid($id);
         if (!$house) {
             $this->flash->error("house was not found");
@@ -250,5 +255,12 @@ class HouseController extends ControllerBase
             'controller' => "house",
             'action' => "index"
         ]);
+    }
+    public function loginredirect()
+    {
+        if (!$this->session->get('userId')) {
+            var_dump($_SESSION);
+            $this->response->redirect('/user/login');
+        }
     }
 }
