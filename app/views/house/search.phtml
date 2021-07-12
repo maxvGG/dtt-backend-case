@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @var \Phalcon\Mvc\View\Engine\Php $this
+ */
+?>
+
+<div class="row">
+    <nav>
+        <ul class="pager">
+            <li class="previous"><?php echo $this->tag->linkTo(["/house/index", "Go Back"]); ?></li>
+            <li class="next"><?php echo $this->tag->linkTo(["/house/new", "Create "]); ?></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>Search result</h1>
+</div>
+
+<?php echo $this->getContent(); ?>
+
+<div class="row">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Street</th>
+                <th>Number</th>
+                <th>Addition</th>
+                <th>Zipcode</th>
+                <th>City</th>
+                <th>BedroomCount</th>
+                <th>LivingroomCount</th>
+                <th>BathroomCount</th>
+                <th>ToiletCount</th>
+                <th>StorageCount</th>
+
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($page->getItems() as $house) : ?>
+                <tr>
+                    <td><?php echo $house["id"] ?></td>
+                    <td><?php echo $house["street"]; ?></td>
+                    <td><?php echo $house['number']; ?></td>
+                    <td><?php echo $house['addition']; ?></td>
+                    <td><?php echo $house['zipcode']; ?></td>
+                    <td><?php echo $house['city']; ?></td>
+                    <td><?php echo $house['bedroomCount']; ?></td>
+                    <td><?php echo $house['livingroomCount']; ?></td>
+                    <td><?php echo $house['bathroomCount']; ?></td>
+                    <td><?php echo $house['toiletCount']; ?></td>
+                    <td><?php echo $house['storageCount']; ?></td>
+                    <?php if ($this->session->get('userAuth') != "1") {
+                        // if the user is not an admin only display the edit and deleate buttons where the user created the place
+                        if ($house['createdByUserId'] == $this->session->get('userId')) { ?>
+                            <td><?= $this->tag->linkTo(["/houses/edit/" . $house['id'], "Edit"]); ?></td>
+                            <td><?= $this->tag->linkTo(["/houses/delete/" . $house['id'], "Delete"]); ?></td>
+                        <?php }
+                    } else { ?>
+                        <td><?= $this->tag->linkTo(["/houses/edit/" . $house['id'], "Edit"]); ?></td>
+                        <td><?= $this->tag->linkTo(["/houses/delete/" . $house['id'], "Delete"]); ?></td>
+                    <?php } ?>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

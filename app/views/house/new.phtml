@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @var \Phalcon\Mvc\View\Engine\Php $this
+ */
+?>
+
+<div class="row">
+    <nav>
+        <ul class="pager">
+            <li class="previous"><?= $this->tag->linkTo(["/house", "Go Back"]) ?></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-header">
+    <h1>Create house</h1>
+</div>
+
+<?= $this->getContent(); ?>
+
+<form action="/house/create" class="form-horizontal" method="post">
+    <div class="form-group">
+        <label for="fieldStreet" class="col-sm-2 control-label">Street</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["street", "size" => 30, "class" => "form-control", "id" => "fieldStreet"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldNumber" class="col-sm-2 control-label">Number</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["number", "type" => "number", "class" => "form-control", "id" => "fieldNumber"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldAddition" class="col-sm-2 control-label">Addition</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["addition", "size" => 30, "class" => "form-control", "id" => "fieldAddition"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldZipcode" class="col-sm-2 control-label">Zipcode</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["zipcode", "size" => 30, "class" => "form-control", "id" => "fieldZipcode"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldCity" class="col-sm-2 control-label">City</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["city", "size" => 30, "class" => "form-control", "id" => "fieldCity"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldBedroomcount" class="col-sm-2 control-label">BedroomCount</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["bedroomCount", "type" => "number", "class" => "form-control", "id" => "fieldBedroomcount"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldLivingroomcount" class="col-sm-2 control-label">LivingroomCount</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["livingroomCount", "type" => "number", "class" => "form-control", "id" => "fieldLivingroomcount"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldBathroomcount" class="col-sm-2 control-label">BathroomCount</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["bathroomCount", "type" => "number", "class" => "form-control", "id" => "fieldBathroomcount"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldToiletcount" class="col-sm-2 control-label">ToiletCount</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["toiletCount", "type" => "number", "class" => "form-control", "id" => "fieldToiletcount"]); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="fieldStoragecount" class="col-sm-2 control-label">StorageCount</label>
+        <div class="col-sm-10">
+            <?= $this->tag->textField(["storageCount", "type" => "number", "class" => "form-control", "id" => "fieldStoragecount"]); ?>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <?= $this->tag->submitButton(["Save", "class" => "btn btn-default"]) ?>
+        </div>
+    </div>
+</form>

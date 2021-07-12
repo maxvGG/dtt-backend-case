@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
- 
+
 
 use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model;
 
 
-class HousesController extends ControllerBase
+class HouseController extends ControllerBase
 {
     /**
      * Index action
@@ -18,19 +19,19 @@ class HousesController extends ControllerBase
     }
 
     /**
-     * Searches for houses
+     * Searches for house
      */
     public function searchAction()
     {
         $numberPage = $this->request->getQuery('page', 'int', 1);
-        $parameters = Criteria::fromInput($this->di, 'Houses', $_GET)->getParams();
+        $parameters = Criteria::fromInput($this->di, 'House', $_GET)->getParams();
         $parameters['order'] = "id";
 
         $paginator   = new Model(
             [
-                'model'      => 'Houses',
+                'model'      => 'House',
                 'parameters' => $parameters,
-                'limit'      => 10,
+                'limit'      => 200,
                 'page'       => $numberPage,
             ]
         );
@@ -38,10 +39,10 @@ class HousesController extends ControllerBase
         $paginate = $paginator->paginate();
 
         if (0 === $paginate->getTotalItems()) {
-            $this->flash->notice("The search did not find any houses");
+            $this->flash->notice("The search did not find any house");
 
             $this->dispatcher->forward([
-                "controller" => "houses",
+                "controller" => "house",
                 "action" => "index"
             ]);
 
@@ -67,12 +68,12 @@ class HousesController extends ControllerBase
     public function editAction($id)
     {
         if (!$this->request->isPost()) {
-            $house = Houses::findFirstByid($id);
+            $house = House::findFirstByid($id);
             if (!$house) {
                 $this->flash->error("house was not found");
 
                 $this->dispatcher->forward([
-                    'controller' => "houses",
+                    'controller' => "house",
                     'action' => 'index'
                 ]);
 
@@ -85,10 +86,13 @@ class HousesController extends ControllerBase
             $this->tag->setDefault("street", $house->getStreet());
             $this->tag->setDefault("number", $house->getNumber());
             $this->tag->setDefault("addition", $house->getAddition());
-            $this->tag->setDefault("zipCode", $house->getZipcode());
+            $this->tag->setDefault("zipcode", $house->getZipcode());
             $this->tag->setDefault("city", $house->getCity());
-            $this->tag->setDefault("rooms", $house->getRooms());
-            
+            $this->tag->setDefault("bedroomCount", $house->getBedroomcount());
+            $this->tag->setDefault("livingroomCount", $house->getLivingroomcount());
+            $this->tag->setDefault("bathroomCount", $house->getBathroomcount());
+            $this->tag->setDefault("toiletCount", $house->getToiletcount());
+            $this->tag->setDefault("storageCount", $house->getStoragecount());
         }
     }
 
@@ -99,21 +103,26 @@ class HousesController extends ControllerBase
     {
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'index'
             ]);
 
             return;
         }
 
-        $house = new Houses();
+        $house = new House();
+        $house->setid($this->request->getPost("id", "int"));
         $house->setstreet($this->request->getPost("street"));
-        $house->setnumber($this->request->getPost("number"));
+        $house->setnumber($this->request->getPost("number", "int"));
         $house->setaddition($this->request->getPost("addition"));
-        $house->setzipCode($this->request->getPost("zipCode"));
+        $house->setzipcode($this->request->getPost("zipcode"));
         $house->setcity($this->request->getPost("city"));
-        $house->setrooms($this->request->getPost("rooms"));
-        
+        $house->setbedroomCount($this->request->getPost("bedroomCount", "int"));
+        $house->setlivingroomCount($this->request->getPost("livingroomCount", "int"));
+        $house->setbathroomCount($this->request->getPost("bathroomCount", "int"));
+        $house->settoiletCount($this->request->getPost("toiletCount", "int"));
+        $house->setstorageCount($this->request->getPost("storageCount", "int"));
+
 
         if (!$house->save()) {
             foreach ($house->getMessages() as $message) {
@@ -121,7 +130,7 @@ class HousesController extends ControllerBase
             }
 
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'new'
             ]);
 
@@ -131,7 +140,7 @@ class HousesController extends ControllerBase
         $this->flash->success("house was created successfully");
 
         $this->dispatcher->forward([
-            'controller' => "houses",
+            'controller' => "house",
             'action' => 'index'
         ]);
     }
@@ -145,7 +154,7 @@ class HousesController extends ControllerBase
 
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'index'
             ]);
 
@@ -153,26 +162,31 @@ class HousesController extends ControllerBase
         }
 
         $id = $this->request->getPost("id");
-        $house = Houses::findFirstByid($id);
+        $house = House::findFirstByid($id);
 
         if (!$house) {
             $this->flash->error("house does not exist " . $id);
 
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'index'
             ]);
 
             return;
         }
 
+        $house->setid($this->request->getPost("id", "int"));
         $house->setstreet($this->request->getPost("street"));
-        $house->setnumber($this->request->getPost("number"));
+        $house->setnumber($this->request->getPost("number", "int"));
         $house->setaddition($this->request->getPost("addition"));
-        $house->setzipCode($this->request->getPost("zipCode"));
+        $house->setzipcode($this->request->getPost("zipcode"));
         $house->setcity($this->request->getPost("city"));
-        $house->setrooms($this->request->getPost("rooms"));
-        
+        $house->setbedroomCount($this->request->getPost("bedroomCount", "int"));
+        $house->setlivingroomCount($this->request->getPost("livingroomCount", "int"));
+        $house->setbathroomCount($this->request->getPost("bathroomCount", "int"));
+        $house->settoiletCount($this->request->getPost("toiletCount", "int"));
+        $house->setstorageCount($this->request->getPost("storageCount", "int"));
+
 
         if (!$house->save()) {
 
@@ -181,7 +195,7 @@ class HousesController extends ControllerBase
             }
 
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'edit',
                 'params' => [$house->getId()]
             ]);
@@ -192,7 +206,7 @@ class HousesController extends ControllerBase
         $this->flash->success("house was updated successfully");
 
         $this->dispatcher->forward([
-            'controller' => "houses",
+            'controller' => "house",
             'action' => 'index'
         ]);
     }
@@ -204,12 +218,12 @@ class HousesController extends ControllerBase
      */
     public function deleteAction($id)
     {
-        $house = Houses::findFirstByid($id);
+        $house = House::findFirstByid($id);
         if (!$house) {
             $this->flash->error("house was not found");
 
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'index'
             ]);
 
@@ -223,7 +237,7 @@ class HousesController extends ControllerBase
             }
 
             $this->dispatcher->forward([
-                'controller' => "houses",
+                'controller' => "house",
                 'action' => 'search'
             ]);
 
@@ -233,7 +247,7 @@ class HousesController extends ControllerBase
         $this->flash->success("house was deleted successfully");
 
         $this->dispatcher->forward([
-            'controller' => "houses",
+            'controller' => "house",
             'action' => "index"
         ]);
     }

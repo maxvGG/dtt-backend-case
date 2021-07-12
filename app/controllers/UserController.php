@@ -8,6 +8,7 @@ use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness as UniquenessValidator;
+use Phalcon\Session\Adapter\Files as Session;
 
 class UserController extends ControllerBase
 {
@@ -16,7 +17,16 @@ class UserController extends ControllerBase
      */
     public function indexAction()
     {
-        //
+        $di->setShared(
+            'session',
+            function () {
+                $session = new Session();
+
+                $session->start();
+
+                return $session;
+            }
+        );
     }
 
     /**
@@ -265,6 +275,7 @@ class UserController extends ControllerBase
         $username = $this->request->getPost('username');
         $pass = $this->request->getPost('password');
         $user = User::findFirstByUsername($username);
+
         if ($user) {
             if ($this->security->checkHash($pass, $user->getpassword())) {
                 $this->session->set(
@@ -275,8 +286,13 @@ class UserController extends ControllerBase
                     ]
                 );
                 $this->session->set('user', $user);
+
+                // tests to make sure u can't delete other peoples houses
+                $this->session->set('userId', $user->{'id'});
+                $this->session->set('userAuth', $user->{'role'});
+
                 $this->flash->success("Welcome back " . $user->getusername());
-                return $this->dispatcher->forward(["controller" => "houses", "action" => "search"]);
+                return $this->dispatcher->forward(["controller" => "house", "action" => "search"]);
             } else {
                 $this->flash->error("Your password is incorrect - try again");
                 return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
