@@ -115,17 +115,19 @@ class UserController extends ControllerBase
         }
 
         $user = new User();
+        // create user
         $user->setusername($this->request->getPost("username"));
         $user->setpassword($this->security->hash($this->request->getPost("password")));
         $user->setfirstname($this->request->getPost("firstname"));
         $user->setsurname($this->request->getPost("surname"));
         $user->setemailAddress($this->request->getPost("emailAddress"));
-        $user->setrole("Registered User");
+        // default role is 2 if role is 1 then the user is an admin
+        $user->setrole("2");
         $user->setstatus("Active");
         $user->setvalidationkey(md5($this->request->getPost("username") . uniqid()));
         $user->setcreatedat((new DateTime())->format("Y-m-d H:i:s")); //will set to the current date/time
 
-
+        // if there is an error with saving the user display error
         if (!$user->save()) {
             $this->errorLog($user);
 
@@ -151,6 +153,7 @@ class UserController extends ControllerBase
      */
     public function saveAction()
     {
+        // redirect if the user is not logged in
         $this->loginredirect();
         if (!$this->request->isPost()) {
             $this->dispatcher->forward([
@@ -160,7 +163,7 @@ class UserController extends ControllerBase
 
             return;
         }
-
+        // get user id
         $id = $this->request->getPost("id");
         $user = User::findFirstByid($id);
 
@@ -174,7 +177,7 @@ class UserController extends ControllerBase
 
             return;
         }
-
+        // get user data
         $user->setusername($this->request->getPost("username"));
         $user->setpassword($this->request->getPost("password"));
         $user->setfirstname($this->request->getPost("firstname"));
@@ -186,7 +189,7 @@ class UserController extends ControllerBase
         $user->setcreatedat($this->request->getPost("createdat"));
         $user->setupdatedat($this->request->getPost("updatedat"));
 
-
+        // if there is an error in with the user display error
         if (!$user->save()) {
 
             $this->errorLog($user);
@@ -201,7 +204,7 @@ class UserController extends ControllerBase
         }
 
         $this->flash->success("user was updated successfully");
-
+        // redirect to user index
         $this->dispatcher->forward([
             'controller' => "user",
             'action' => 'index'
@@ -215,6 +218,7 @@ class UserController extends ControllerBase
      */
     public function deleteAction($id)
     {
+        // check if user is logged in
         $this->loginredirect();
         $user = User::findFirstByid($id);
         if (!$user) {
@@ -255,9 +259,9 @@ class UserController extends ControllerBase
     }
     public function logoutAction()
     {
-
+        // destroy session to log the user in
         $this->session->destroy();
-        return $this->dispatcher->forward(["controller" => "user", "action" => "search"]);
+        return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
     }
     public function authorizeAction()
     {
@@ -280,26 +284,21 @@ class UserController extends ControllerBase
                 // tests to make sure u can't delete other peoples houses
                 $this->session->set('userId', $user->{'id'});
                 $this->session->set('userAuth', $user->{'role'});
-
-                $this->flash->success("Welcome back " . $user->getusername());
+                // redirect to the houses page
+                echo ("Welcome back " . $user->getusername());
                 return $this->dispatcher->forward(["controller" => "house", "action" => "search"]);
             } else {
-                $this->flash->error("Your password is incorrect - try again");
+                // if password is incorrect display this error
+                echo ("Your password is incorrect - try again");
                 return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
             }
         } else {
-            $this->flash->error("That username was not found - try again");
+            echo ("That username was not found - try again");
             return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
         }
+        // redirect after checks if user is not logged in
         $this->loginredirect();
         return $this->dispatcher->forward(["controller" => "index", "action" => "index"]);
-    }
-    public function validation()
-    {
-        $validator = new Validation();
-        $uValidator = new UniquenessValidator(["message" => "this userName has already been chosen"]);
-        $validator->add('username', $uValidator);
-        return $this->validate($validator);
     }
     /**
      * login redirect
