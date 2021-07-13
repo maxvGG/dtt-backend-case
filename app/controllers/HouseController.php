@@ -129,9 +129,7 @@ class HouseController extends ControllerBase
         $house->setcreatedByUserId($this->session->get("userId"), "int");
 
         if (!$house->save()) {
-            foreach ($house->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($house);
 
             $this->dispatcher->forward([
                 'controller' => "house",
@@ -194,9 +192,7 @@ class HouseController extends ControllerBase
 
         if (!$house->save()) {
 
-            foreach ($house->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($house);
 
             $this->dispatcher->forward([
                 'controller' => "house",
@@ -237,9 +233,7 @@ class HouseController extends ControllerBase
 
         if (!$house->delete()) {
 
-            foreach ($house->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($house);
 
             $this->dispatcher->forward([
                 'controller' => "house",
@@ -256,11 +250,23 @@ class HouseController extends ControllerBase
             'action' => "index"
         ]);
     }
+    /**
+     * redirect login
+     */
     public function loginredirect()
     {
         if (!$this->session->get('userId')) {
             var_dump($_SESSION);
             $this->response->redirect('/user/login');
+        }
+    }
+    /**
+     * error logger
+     */
+    private function errorLog($error)
+    {
+        foreach ($error->getMessages() as $message) {
+            $this->flash->error($message);
         }
     }
 }

@@ -8,7 +8,7 @@ use Phalcon\Mvc\Model\Criteria;
 use Phalcon\Paginator\Adapter\Model;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness as UniquenessValidator;
-use Phalcon\Session\Adapter\Files as Session;
+
 
 class UserController extends ControllerBase
 {
@@ -127,9 +127,7 @@ class UserController extends ControllerBase
 
 
         if (!$user->save()) {
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($user);
 
             $this->dispatcher->forward([
                 'controller' => "user",
@@ -191,9 +189,7 @@ class UserController extends ControllerBase
 
         if (!$user->save()) {
 
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($user);
 
             $this->dispatcher->forward([
                 'controller' => "user",
@@ -234,9 +230,7 @@ class UserController extends ControllerBase
 
         if (!$user->delete()) {
 
-            foreach ($user->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+            $this->errorLog($user);
 
             $this->dispatcher->forward([
                 'controller' => "user",
@@ -307,11 +301,23 @@ class UserController extends ControllerBase
         $validator->add('username', $uValidator);
         return $this->validate($validator);
     }
+    /**
+     * login redirect
+     */
     public function loginredirect()
     {
         if (!$this->session->get('userId')) {
             var_dump($_SESSION);
             $this->response->redirect('/user/login');
+        }
+    }
+    /**
+     * error logger
+     */
+    private function errorLog($error)
+    {
+        foreach ($error->getMessages() as $message) {
+            $this->flash->error($message);
         }
     }
 }
