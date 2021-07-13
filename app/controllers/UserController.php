@@ -285,21 +285,22 @@ class UserController extends ControllerBase
                 $this->session->set('userId', $user->{'id'});
                 $this->session->set('userAuth', $user->{'role'});
                 // redirect to the houses page
-                echo ("Welcome back " . $user->getusername());
+                $this->flash->success("Welcome back " . $user->getusername());
                 return $this->dispatcher->forward(["controller" => "house", "action" => "search"]);
             } else {
                 // if password is incorrect display this error
-                echo ("Your password is incorrect - try again");
+                $this->flash->error("Your password is incorrect - try again");
                 return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
             }
         } else {
-            echo ("That username was not found - try again");
+            $this->flash->error("That username was not found - try again");
             return $this->dispatcher->forward(["controller" => "user", "action" => "login"]);
         }
         // redirect after checks if user is not logged in
         $this->loginredirect();
         return $this->dispatcher->forward(["controller" => "index", "action" => "index"]);
     }
+
     /**
      * login redirect
      */
